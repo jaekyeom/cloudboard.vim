@@ -91,7 +91,7 @@ class CloudBoard:
     def initToken(self, gistToken=None):
         ret = False
         if module_exists("vim"):
-            vim.command("let g:gistToken=input('To use CloudBoard, you must generate your personal access token(https://github.com/settings/tokens), then input it here:')")
+            vim.command("""if !exists("g:gistToken") | let g:gistToken=input('To use CloudBoard, you must generate your personal access token(https://github.com/settings/tokens), then input it here:') | end""")
             if vim.eval('g:gistToken') != '':
                 self.config['token'] = vim.eval('g:gistToken')
                 self.config['gist'] = initGist(self.config['token'], "cloudboard")
@@ -306,5 +306,5 @@ class CloudBoard:
         self.saveConfig()
 
 cloudBoard = CloudBoard()
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and not module_exists("vim"):
     cloudBoard.initToken(sys.argv[1])
